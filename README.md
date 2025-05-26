@@ -128,7 +128,7 @@ ros2 launch dsr_bringup2 dsr_bringup2_gazebo.launch.py mode:=real host:=192.168.
 ### Run the visual alignment node:
 
 ```bash
-ros2 run zoom_selector zoom_centering_node
+ros2 run zoom_selector zoom_centering
 ```
 
 The node will:
