@@ -17,17 +17,17 @@ from dsr_msgs2.srv import MoveLine, MoveJoint
 
 # CAMERA_ID must match the correct /dev/videoX associated with the Logitech C920 camera.
 # Use `v4l2-ctl --list-devices` and `v4l2-ctl -d /dev/videoX --list-ctrls` to determine it.
-CAMERA_ID = 0
+CAMERA_ID = 2
 
 # Distance from the camera to the object in centimeters.
 # IMPORTANT: Always measure accurately to avoid exceeding the robot's workspace.
-OBJECT_DISTANCE_CM = 360
+OBJECT_DISTANCE_CM = 190
 
 # Margin (in pixels) to prevent the object from reaching the image edges during zoom.
 PIXEL_MARGIN = 20
 
 # Reference image path (must match the object of interest).
-REFERENCE_IMAGE_PATH = "/home/meic/Pictures/Webcam/img_ref.jpg"
+REFERENCE_IMAGE_PATH = "/home/meic/Pictures/img_ref.jpg"
 
 # === FIXED PARAMETERS ===
 
@@ -230,10 +230,10 @@ async def async_main():
 
             # If significant residual error remains, apply angular correction
             if avg_new_error > 0.05 * initial_error:
-                pitch, roll = error_to_angle(dx2, dy2, ZOOM_MIN)
+                pitch, roll = pixel_to_angle(dx2, dy2, ZOOM_MIN)
                 print(f"🔄 Applying Roll={roll:.2f}°, Pitch={pitch:.2f}°")
                 await move_robot(node, client, [0.0, 0.0, 0.0, 0.0, pitch, 0.0])
-                await move_joint_4(node, client_joint, roll)
+                await move_joint_4(node, joint_client, roll)
                 time.sleep(2.0)
             break
 
@@ -245,7 +245,7 @@ async def async_main():
     z_offset = 0.0
     no_zoom_improvement = 0
 
-    for z_iter in range(MAX_ZOOM_ITERS):
+    for z_iter in range(MAX_ZOOM_ITERATIONS):
         prev_zoom = current_zoom
 
         while current_zoom + 2 <= ZOOM_MAX:
@@ -258,7 +258,7 @@ async def async_main():
 
             dx2, dy2, good2, _, projected = calculate_displacement(frame, kp_ref, des_ref)
 
-            if dx2 is None or len(good2) < 8 or not is_within_frame(projected):
+            if dx2 is None or len(good2) < 8 or not is_within_bounds(projected):
                 current_zoom -= 2  # Revert to previous valid zoom
                 break
 
@@ -273,7 +273,7 @@ async def async_main():
             print("🛑 Zoom no longer improves image quality. Stopping.")
             break
 
-        z_offset += Z_INCREMENT_MM
+        #z_offset += Z_INCREMENT_MM
         # Movement in Z is commented out for safety, enable if vertical motion is needed
         # await move_robot(node, client, [0.0, 0.0, z_offset, 0.0, 0.0, 0.0])
         time.sleep(2)
