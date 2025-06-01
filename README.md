@@ -18,7 +18,7 @@ This repository contains a custom ROS 2 (Humble) package for visual alignment an
 ## 🧩 System Requirements
 
 - **Operating System**: Ubuntu 22.04 (64-bit)
-- **Disk Space**: ≥ 60 GB
+- **Disk Space**: ≥ 20 GB
 - **ROS 2 Distribution**: Humble
 - **Doosan Robot Model**: M1509
 - **Camera**: Logitech C920 
@@ -174,12 +174,8 @@ This project is licensed under the Apache 2.0 License.
 **Víctor Felipe Zúñiga Quesada**
 Mechatronic Design Assistant
 SUNY Korea - Mechanical Systems with Intelligence and Computer Vision Lab
-GitHub: [VictorFelipeZunigaQuesada](https://github.com/VictorFelipeZunigaQuesada)
 email: vfzuniga@espol.edu.ec
 
 ---
 
-```
 
-¿Te gustaría que ahora lo convierta en el archivo real `README.md` y te indique cómo subirlo al repo?
-```
